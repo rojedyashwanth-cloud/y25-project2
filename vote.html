@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Voter Education — Pros & Cons + Sources</title>
+
+<style>
+/* ---------- Theme & layout ---------- */
+:root{
+  --bg1:#071428; --bg2:#031927;
+  --glass: rgba(255,255,255,0.03);
+  --accent1: #06b6d4; --accent2:#60a5fa;
+  --muted: #9fb4c9;
+  --card-radius:16px;
+  --shadow: 0 10px 30px rgba(2,6,23,0.6);
+  --glass-border: rgba(255,255,255,0.03);
+  --glass-2: rgba(255,255,255,0.02);
+  font-family: Inter, system-ui, sans-serif;
+}
+
+html,body{
+  height:100%;margin:0;
+  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  color:#e6f0fb;
+  -webkit-font-smoothing:antialiased
+}
+
+.wrap{
+  max-width:1180px;margin:28px auto;padding:20px;
+  display:grid;grid-template-columns:340px 1fr;
+  gap:20px;align-items:start
+}
+
+.panel{
+  background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+  border-radius:var(--card-radius);
+  padding:18px;border:1px solid var(--glass-border);
+  box-shadow:var(--shadow)
+}
+
+.brand{display:flex;gap:12px;align-items:center}
+.logo{
+  width:56px;height:56px;border-radius:12px;
+  background:linear-gradient(135deg,var(--accent1),var(--accent2));
+  display:grid;place-items:center;font-weight:800;color:#021024
+}
+
+h1{margin:0;font-size:20px}
+.subtitle{color:var(--muted);font-size:13px;margin-top:6px}
+
+/* sidebar */
+.sidebar{position:sticky;top:28px}
+.nav{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.nav button{
+  padding:10px 12px;border-radius:10px;border:0;
+  background:transparent;color:var(--accent2);
+  text-align:left;font-weight:700;cursor:pointer;
+  transition:transform .18s,background .18s
+}
+.nav button:hover{transform:translateX(6px);color:#cfeffb}
+.nav button.active{background:rgba(96,165,250,0.06);color:#fff}
+
+.sources a{color:var(--accent1);text-decoration:none;font-weight:600}
+
+/* party grid */
+.party-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:16px;margin-top:18px
+}
+.party{
+  position:relative;border-radius:14px;overflow:hidden;
+  cursor:pointer;transition:transform .28s,box-shadow .28s
+}
+.party:hover{transform:translateY(-8px);box-shadow:0 20px 50px rgba(2,6,23,0.7)}
+.party .cover{height:140px;background-size:cover;background-position:center}
+.party .body{
+  padding:12px;background:rgba(0,0,0,0.28);
+  display:flex;flex-direction:column;gap:8px
+}
+.party h3{margin:0;font-size:16px}
+.tag{
+  display:inline-block;padding:6px 8px;border-radius:999px;
+  background:rgba(255,255,255,0.05);
+  font-weight:700;color:var(--accent2);font-size:12px
+}
+
+/* pros/cons */
+.pc-row{display:flex;gap:12px;flex-wrap:wrap}
+.pc{
+  flex:1;min-width:240px;
+  background:rgba(255,255,255,0.03);
+  padding:12px;border-radius:12px;
+  border:1px solid rgba(255,255,255,0.05)
+}
+.pc h4{margin:0 0 8px 0}
+.pc ul{margin:0;padding-left:18px;color:var(--muted)}
+
+.collapsible{overflow:hidden;max-height:0;transition:max-height .45s,opacity .25s}
+.collapsible.open{max-height:600px;opacity:1}
+
+/* CTA */
+.cta{
+  position:fixed;right:20px;bottom:20px;
+  padding:12px 16px;border-radius:12px;
+  background:linear-gradient(90deg,var(--accent1),var(--accent2));
+  color:#021024;font-weight:800;
+  box-shadow:0 15px 40px rgba(6,182,212,0.12);
+  cursor:pointer
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+<!-- SIDEBAR -->
+<aside class="panel sidebar">
+  <div class="brand">
+    <div class="logo">V</div>
+    <div>
+      <h1>Voter Smartboard</h1>
+      <div class="subtitle">Research pros, cons & sources</div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="active" data-section="explore">Explore</button>
+    <button data-section="compare">Compare</button>
+    <button data-section="sources">Sources</button>
+  </div>
+</aside>
+
+<!-- CONTENT -->
+<main class="content">
+
+  <!-- PARTY GRID -->
+  <div id="partyGrid" class="party-grid"></div>
+
+  <!-- PROS CONS PANEL -->
+  <div id="pcPanel" class="panel" style="display:none;margin-top:18px">
+    <h3>Pros & Cons — <span id="pcTitle"></span></h3>
+
+    <div class="pc-row" style="margin-top:12px">
+      <div class="pc">
+        <h4>Pros</h4>
+        <ul id="prosList"></ul>
+      </div>
+      <div class="pc">
+        <h4>Cons</h4>
+        <ul id="consList"></ul>
+      </div>
+    </div>
+
+    <button id="moreBtn" class="tag" style="margin-top:12px">More</button>
+    <div id="morePanel" class="collapsible" style="margin-top:12px;">
+      <div id="sourceList"></div>
+    </div>
+
+  </div>
+
+  <!-- COMPARE PANEL -->
+  <div id="comparePanel" class="panel" style="display:none;margin-top:18px">
+    <h3>Compare Parties</h3>
+    <p class="muted">-
+🟥  partyA:
+-Founded: 1980
+- Ideology: Right-wing, Hindu nationalism, cultural conservatism
+- Leadership: Narendra Modi, J.P. Nadda
+- Strengths: Strong national presence, dominant in recent Lok Sabha elections
+- Focus Areas: Infrastructure, economic growth, national security
+- Symbol: Lotus 🌸
+</br>
+</br>
+🟦 PartyB: 
+- Founded: 1885
+- Ideology: Center-left, secularism, social democracy
+- Leadership: Mallikarjun Kharge, Rahul Gandhi
+- Strengths: Historical legacy, influence in several states
+- Focus Areas: Welfare schemes, inclusive development, minority rights
+- Symbol: Hand ✋
+</br>
+</br>
+🟩 PartyC:
+- Founded: 2012
+- Ideology: Centrist, anti-corruption, governance reform
+- Leadership: Arvind Kejriwal
+- Strengths: Strong in Delhi and Punjab, expanding gradually
+- Focus Areas: Education, healthcare, transparency
+- Symbol: Broom 🧹
+
+Let me know if you'd like to compare their performance in Andhra Pradesh or how they approach rural tech and agriculture—happy to tailor it to your interests!
+</p>
+  </div>
+
+</main>
+
+<button class="cta" id="educateBtn">Sources</button>
+
+</div>
+
+<script>
+// ------------------------------------------------------------
+//   DATA (FICTIONAL PARTIES ONLY — SAFE CONTENT)
+// ------------------------------------------------------------
+const parties = {
+  A:{
+    name:"Party A — Progressive Forward",
+    img:"https://images.unsplash.com/photo-1507679799987-c73779587ccf",
+    tag:"Urban & Tech Focus",
+    summary:"Focuses on innovation and technology-driven development.",
+    pros:[
+      "Supports digital infrastructure.",
+      "Encourages tech startups.",
+      "Invests in urban development."
+    ],
+    cons:[
+      "Less emphasis on rural outreach.",
+      "High reliance on private sector.",
+      "Details may lack cost breakdowns."
+    ]
+  },
+  B:{
+    name:"Party B — Unity & Growth",
+    img:"https://media.istockphoto.com/id/1163543431/vector/silhouette-of-young-man-standing-with-hand-up-holding-flag-on-sunrise-background-successful.jpg?s=612x612&w=0&k=20&c=EcjAHFPHPd2WYrxOIzZd3OQI-hfy6ibKsMp3zLm-cdU=",
+    tag:"Jobs & Industry",
+    summary:"Advocates for manufacturing and employment growth.",
+    pros:[
+      "Focus on job creation.",
+      "Supports industrial expansion.",
+      "Broad voter coalitions."
+    ],
+    cons:[
+      "Large schemes may cost more.",
+      "Timeline details sometimes unclear.",
+      "Short-term growth vs long-term stability issues."
+    ]
+  },
+  C:{
+    name:"Party C — Green Future",
+    img:"https://images.unsplash.com/photo-1469474968028-56623f02e42e",
+    tag:"Environment & Sustainability",
+    summary:"Prioritises renewable energy and sustainable growth.",
+    pros:[
+      "Strong renewable energy plans.",
+      "Supports sustainable jobs.",
+      "Focuses on long-term ecological stability."
+    ],
+    cons:[
+      "High initial costs.",
+      "Transition may reduce short-term jobs.",
+      "Industry pushback possible."
+    ]
+  }
+};
+
+// ------------------------------------------------------------
+//   CREATE PARTY CARDS
+// ------------------------------------------------------------
+const partyGrid = document.getElementById("partyGrid");
+
+function makePartyCard(p,key){
+  const div = document.createElement("div");
+  div.className="party";
+  div.innerHTML = `
+    <div class="cover" style="background-image:url('${p.img}')"></div>
+    <div class="body">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h3>${p.name}</h3>
+        <div class="tag">${p.tag}</div>
+      </div>
+      <div class="muted" style="font-size:13px">${p.summary}</div>
+    </div>
+  `;
+  div.addEventListener("click",()=>showParty(key));
+  return div;
+}
+
+Object.entries(parties).forEach(([k,p])=>{
+  partyGrid.appendChild(makePartyCard(p,k));
+});
+
+// ------------------------------------------------------------
+//   SHOW PARTY
+// ------------------------------------------------------------
+const pcPanel = document.getElementById("pcPanel");
+const pcTitle = document.getElementById("pcTitle");
+const prosList = document.getElementById("prosList");
+const consList = document.getElementById("consList");
+const morePanel = document.getElementById("morePanel");
+const sourceList = document.getElementById("sourceList");
+
+function showParty(key){
+  const p = parties[key];
+
+  pcPanel.style.display = "block";
+  pcTitle.textContent = p.name;
+
+  prosList.innerHTML = p.pros.map(x=>`<li>${x}</li>`).join("");
+  consList.innerHTML = p.cons.map(x=>`<li>${x}</li>`).join("");
+
+  // Add recent developments in the sourceList for each party
+function showParty(key){
+  const p = parties[key];
+
+  pcPanel.style.display = "block";
+  pcTitle.textContent = p.name;
+
+  prosList.innerHTML = p.pros.map(x => `<li>${x}</li>`).join("");
+  consList.innerHTML = p.cons.map(x => `<li>${x}</li>`).join("");
+
+  // Insert recent developments for each party here
+  let recentDev = "";
+  if(key === "A"){
+    recentDev = `
+      <h4>Recent Developments (2025):</h4>
+      <ul>
+        <li>Initiated major digital infrastructure expansion and tech hubs.</li>
+        <li>Promoting tech startups with new funding and incubator programs.</li>
+        <li>Accelerated investment in smart city development with public-private partnerships.</li>
+      </ul>
+    `;
+  } else if(key === "B"){
+    recentDev = `
+      <h4>Recent Developments (2025):</h4>
+      <ul>
+        <li>Focused on industrial growth and employment programs in manufacturing sectors.</li>
+        <li>Managing coalition dynamics to pass welfare and social justice legislations.</li>
+        <li>Launched campaign to expand influence in rural areas and smaller states.</li>
+      </ul>
+    `;
+  } else if(key === "C"){
+    recentDev = `
+      <h4>Recent Developments (2025):</h4>
+      <ul>
+        <li>Ramped up renewable energy plans with large-scale solar and wind projects.</li>
+        <li>Advocated for sustainable job creation amid industry resistance.</li>
+        <li>Supported long-term ecological stability programs in key states.</li>
+      </ul>
+    `;
+  }
+
+  sourceList.innerHTML = `
+    <div class="muted">Use official public data sources, independent research sites, and cross-check across multiple reputable outlets for reliability.</div>
+    ${recentDev}
+  `;
+
+  morePanel.classList.remove("open");
+  morePanel.style.opacity = 0;
+}
+sourceList.innerHTML = `
+    <div class="muted">Use official public data sources, independent research sites, and cross-check across multiple reputable outlets for reliability.</div>
+    ${recentDev}
+  `;
+
+
+  morePanel.classList.remove("open");
+  morePanel.style.opacity = 0;
+}
+
+// ------------------------------------------------------------
+//   MORE PANEL TOGGLE
+// ------------------------------------------------------------
+document.getElementById("moreBtn").addEventListener("click",()=>{
+  if(morePanel.classList.contains("open")){
+    morePanel.classList.remove("open");
+    morePanel.style.opacity = 0;
+  } else {
+    morePanel.classList.add("open");
+    setTimeout(()=>morePanel.style.opacity=1,30);
+  }
+});
+
+// ------------------------------------------------------------
+//   NAVIGATION
+// ------------------------------------------------------------
+document.querySelectorAll(".nav button").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+
+    const sec = btn.dataset.section;
+
+    if(sec==="explore"){
+      pcPanel.style.display="block";
+      comparePanel.style.display="none";
+    }
+    if(sec==="compare"){
+      pcPanel.style.display="none";
+      comparePanel.style.display="block";
+    }
+    if(sec==="sources"){
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+  });
+});
+
+// CTA button
+document.getElementById("educateBtn").addEventListener("click",()=>{
+  document.querySelector("[data-section='sources']").click();
+});
+</script>
+
+</body>
+</html>
